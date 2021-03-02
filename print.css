@@ -5,12 +5,13 @@
 #form,
 #github,
 #contact,
-.footer,
-.github-fork-ribbon {
+.footer {
     display: none;
 }
 
 #showssid,
 #showkey {
     display: block;
+    word-wrap: break-word;
+    font-family: Consolas, Menlo, "DejaVu Sans Mono", monospace;
 }

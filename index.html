@@ -10,14 +10,11 @@
     <meta name="flattr:id" content="menw3k">
     <title>pure JS WiFi QR Code Generator</title>
     <link rel="stylesheet" type="text/css" media="all" href="style.css">
-    <link rel="stylesheet" type="text/css" media="all" href="style-responsive.css">
     <link rel="stylesheet" type="text/css" media="print" href="print.css">
-    <link rel="stylesheet" href="github-fork-ribbon-css/gh-fork-ribbon.css" />
-    <!--[if IE]>
-        <link rel="stylesheet" href="github-fork-ribbon-css/gh-fork-ribbon.ie.css" />
-    <![endif]-->
+    <link rel="icon" href="qifi.png" type="image/x-icon">
+    <link rel="manifest" href="manifest.json">
 
-    <link href="bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="all" href="bootstrap/dist/css/bootstrap.min.css">
     <style>
       body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
@@ -25,8 +22,6 @@
     </style>
 </head>
 <body>
-
-
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -96,11 +91,11 @@
             <button id="generate" class="btn btn-primary">Generate!</button>
             <button id="save" type="button" class="btn" data-toggle="tooltip" title="Save the credentials for the WiFi in HTML5 localStorage for later use.">Save!</button>
             <a href="#" id="export" class="btn" target="_blank" data-toggle="tooltip" title="Export the QR code as a PNG.">Export!</a>
-            <a href="javascript:window.print()" id="print" data-toggle="tooltip" title="Print the QR code.">Print!</a>
+            <a href="javascript:window.print()" id="print" class="btn" data-toggle="tooltip" title="Print the QR code.">Print!</a>
         </div>
     </form>
     <h1 id="showssid">SSID: none</h1>
-    <h1 id="showkey">WPA: none</h1>
+    <h1 id="showkey">Passphrase: none</h1>
     <div id="qrcode"></div>
     </section>
     <section id="about">
@@ -114,7 +109,7 @@
         <p>
         Don't trust your browser either? Just pipe the string
         <code>WIFI:S:&lt;SSID&gt;;T:&lt;WPA|WEP|&gt;;P:&lt;password&gt;;;</code>
-        through the QR code generator of your choice after <a href="https://github.com/zxing/zxing/wiki/Barcode-Contents#wifi-network-config-android">reading the documentation</a>.
+        through the QR code generator of your choice after <a href="https://github.com/zxing/zxing/wiki/Barcode-Contents#wi-fi-network-config-android-ios-11">reading the documentation</a>.
         </p>
 
         <h2>Supported Scanners</h2>
@@ -124,6 +119,9 @@
         </p>
         <p>
             <a href="https://play.google.com/store/apps/details?id=de.gavitec.android">NeoReader</a>.
+        </p>
+        <p>
+            Huawei phones have a QR code scanner in HiVision mode. This mode has an eye-shaped icon and can be lauched from the lock screen by swiping up or from the camera.
         </p>
         <p>
             Every other Android Barcode Scanner based on the <a href="https://code.google.com/p/zxing/">ZXing library</a>.
@@ -146,19 +144,17 @@
     </section>
     <section id="contact">
         <div class="page-header"><h1 class="anchor">Contact</h1></div>
-        <p>QiFi was written by <a href="https://www.die-welt.net">Evgeni Golov</a>, using <a href="http://jquery.com/">jQuery</a>, <a href="http://jeromeetienne.github.io/jquery-qrcode/">jQuery QRCode</a>, <a href="http://yckart.github.io/jquery.storage.js/">jQuery Storage</a> and <a href="http://twitter.github.io/bootstrap">Twitter Bootstrap</a>.</p>
+        <p>QiFi was written by <a href="https://www.die-welt.net">Evgeni Golov</a>, using <a href="http://jquery.com/">jQuery</a>, <a href="http://jeromeetienne.github.io/jquery-qrcode/">jQuery QRCode</a>, <a href="http://yckart.github.io/jquery.storage.js/">jQuery Storage</a> and <a href="https://getbootstrap.com/">Bootstrap</a>.</p>
         <p>If you have any comments, suggestions, bugs or complaints: please write to: <a href="mailto:evgeni+qifi@golov.de">evgeni+qifi@golov.de</a>.</p>
     </section>
-    <a class="github-fork-ribbon right-top fixed" href="https://github.com/evgeni/qifi" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
     </div>
     <footer class="footer">
       <div class="container">
-        <img src="qifi.png" alt="qifi logo"/> by <a href="https://github.com/evgeni">@evgeni</a><br />
-        <a href="https://flattr.com/thing/1191625/qifi-pure-JS-WiFi-QR-Code-Generator" target="_blank">
-        <img src="https://button.flattr.com/flattr-badge-large.png" alt="Flattr this" title="Flattr this"></a>
+        <img src="qifi-small.png" alt="qifi logo"/> by <a href="https://github.com/evgeni">@evgeni</a><br/>
+        <span style="color: #999999;">QR Code is a registered trademark of DENSO WAVE INCORPORATED in the United States and other countries.</span>
       </div>
     </footer>
-    <script src="jquery/jquery-3.3.1.min.js"></script>
+    <script src="jquery/jquery-3.5.1.slim.min.js"></script>
     <script src="bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="jquery-qrcode/jquery.qrcode.min.js"></script>
     <script src="jquery.storage.js/jquery.storage.js"></script>
@@ -187,12 +183,12 @@
             var enc = $('#enc').val();
             if (enc != 'nopass') {
                 var key = $('#key').val();
-                $('#showkey').text(enc+': '+key);
+                $('#showkey').text(enc+' Passphrase: '+key);
             } else {
                 var key = '';
                 $('#showkey').text('');
             }
-            // https://github.com/zxing/zxing/wiki/Barcode-Contents#wifi-network-config-android
+            // https://github.com/zxing/zxing/wiki/Barcode-Contents#wi-fi-network-config-android-ios-11
             var qrstring = 'WIFI:S:'+escape_string(ssid)+';T:'+enc+';P:'+escape_string(key)+';';
             if (hidden) {
                 qrstring += 'H:true';
@@ -301,6 +297,17 @@
             });
             loadhistory();
         });
+
+        // Service Worker installation
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js', {scope: './'}).then(function(registration) {
+                    console.log('[Service Worker] Successfully installed');
+                }).catch(function(error) {
+                    console.log('[Service Worker] Installation failed:', error);
+                })
+            });
+        }
     </script>
 </body>
 </html>
